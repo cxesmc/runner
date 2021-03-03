@@ -74,10 +74,17 @@ from runner.job.model import interface
 from runner.job.config import ParserIO, program
 import os
 
+import pandas as pd 
+from tabulate import tabulate
 
 EXPCONFIG = 'experiment.json'
 EXPDIR = 'out'
 
+def to_fwf(df, fname):
+    content = tabulate(df.values.tolist(), list(df.columns), tablefmt="plain")
+    open(fname, "w").write(content)
+
+pd.DataFrame.to_fwf = to_fwf
 
 # run
 # ---
@@ -225,8 +232,29 @@ def main(o):
 
     # test: run everything serially
     if o.shell:
+        
+        # Load params.txt into a list
+        params_list = open(o.expdir+"/params.txt",'r').read().split('\n')
+
+        # Generate a new list 
+        info_list = ["runid rundir "+params_list[0]]
+
         for i in indices:
             xrun[i].run(background=False)
+
+            # Add runid and rundir to list for writing 
+            runid  = i 
+            rundir = os.path.basename(xrun[i].rundir)
+            info_list.append("{} {} {}".format(runid,rundir,params_list[i+1]))
+
+        # Write the info list to file
+        exp_file = o.expdir+"/info.txt"
+        with open(exp_file, "w") as outfile:
+            outfile.write("\n".join(info_list))
+
+        # Cleanup file 
+        tmp = pd.read_csv(exp_file,delim_whitespace=True)
+        tmp.to_fwf(exp_file) 
 
     # the default
     else:
