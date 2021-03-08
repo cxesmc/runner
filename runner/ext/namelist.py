@@ -34,6 +34,14 @@ class Namelist(FileType):
         params = parse_nml(string)
         return odict([(p.group + self.sep + p.name, p.value) for p in params])
 
+def nml_update_if_exists(par,new):
+    # Only update keys if they already exist 
+
+    for key in new:
+        if key in par:
+            par.update({key:new.get(key)})
+
+    return par
 
 def parse_nml(string, ignore_comments=False):
     """ parse a string namelist, and returns a list of param bundles

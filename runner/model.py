@@ -233,6 +233,8 @@ class ModelInterface(object):
 
         self.setup(rundir, params_kw)
 
+        #print("Hello after setup.") 
+
         if background:
             output = os.path.join(rundir, 'log.out')
             error = os.path.join(rundir, 'log.err')
