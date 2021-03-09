@@ -237,7 +237,7 @@ def main(o):
         params_list = open(o.expdir+"/params.txt",'r').read().split('\n')
 
         # Generate a new list 
-        info_list = ["runid rundir "+params_list[0]]
+        info_list = ["runid "+params_list[0]+" rundir"]
 
         for i in indices:
             xrun[i].run(background=False)
@@ -245,7 +245,7 @@ def main(o):
             # Add runid and rundir to list for writing 
             runid  = i 
             rundir = os.path.basename(xrun[i].rundir)
-            info_list.append("{} {} {}".format(runid,rundir,params_list[i+1]))
+            info_list.append("{} {} {}".format(runid,params_list[i+1],rundir))
 
         # Write the info list to file
         exp_file = o.expdir+"/info.txt"
