@@ -86,6 +86,9 @@ def to_fwf(df, fname):
 
 pd.DataFrame.to_fwf = to_fwf
 
+#def print_table(list):
+
+
 # run
 # ---
 
@@ -236,26 +239,30 @@ def main(o):
         # Load params.txt into a list
         params_list = open(o.expdir+"/params.txt",'r').read().split('\n')
 
-        # Generate a new list 
-        info_list = ["runid "+params_list[0]+" rundir"]
+        gen_info = True 
+        if len(params_list) == 1: gen_info = False 
+
+        if gen_info:
+            # Generate a new list 
+            info_header = ["runid"] + params_list[0].split() + ["rundir"]
+            info_list = []
 
         for i in indices:
             xrun[i].run(background=False)
 
-            # Add runid and rundir to list for writing 
-            runid  = i 
-            rundir = os.path.basename(xrun[i].rundir)
-            info_list.append("{} {} {}".format(runid,params_list[i+1],rundir))
+            if gen_info:
+                # Add runid and rundir to list for writing 
+                runid     = i 
+                rundir    = os.path.basename(xrun[i].rundir)
+                info_line = [runid] + params_list[i+1].split() + [rundir]
+                info_list.append(info_line)
 
-        # Write the info list to file
-        exp_file = o.expdir+"/info.txt"
-        with open(exp_file, "w") as outfile:
-            outfile.write("\n".join(info_list))
-
-        # Cleanup file 
-        tmp = pd.read_csv(exp_file,delim_whitespace=True)
-        tmp.to_fwf(exp_file) 
-
+        if gen_info:
+            # Write the info list to file
+            exp_file = o.expdir+"/info.txt"
+            info = pd.DataFrame(info_list,columns=info_header)
+            info.to_fwf(exp_file)
+            
     # the default
     else:
         xrun.run(indices=indices)
