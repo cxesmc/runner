@@ -4,13 +4,29 @@ Sample parameters, run model ensemble over multiple processors
 
 Requirements
 ============
-- python 2.7 and 3
+- Python 2.7 and 3
+
+Python libraries:
 - numpy (tested with 1.11)
 - scipy (tested with 0.16 and 0.18)
+- tabulate
+
+These libraries can be installed with `pip`, e.g., `pip install tabulate`. 
 
 Install
 =======
-    python setup.py install
+
+1. Clone / download the `runner` repository from [https://github.com/alex-robinson/runner](https://github.com/alex-robinson/runner)
+2. Install `runner` to your Python installation via `pip`:
+
+```
+cd runner 
+pip install ./ 
+```
+
+Now check that system command `job` is available by running `job -h`. 
+
+Note that install method `python setup.py install` should be avoided if possible to maintain Python system integrity.
 
 Usage
 =====
