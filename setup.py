@@ -7,5 +7,5 @@ setup(name='runner',
       author_email='mahe.perrette@pik-potsdam.de',
       packages = ['runner', 'runner.lib', 'runner.ext', 'runner.tools', 'runner.job'],
       depends = ['numpy', 'scipy', 'six', 'tox'],
-      scripts = ['scripts/job'], 
+      scripts = ['scripts/job','scripts/jobrun'], 
       )

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Store all command line arguments as an array
+myArray=( "$@" )
+
+# Determine number of argument equal to '--'
+for i in "${!myArray[@]}"; do
+    [[ "${myArray[$i]}" = '--' ]] && break
+done
+n_run=$i
+n_ens="$(($n_run + 2))"
+
+# Get string of arguments related to individual run options (run_climber options)
+args_run=$(printf "%s " "${myArray[@]:0:${n_run}}")
+
+# Get string of arguments related to ensemble (job run options)
+args_ens="${@:${n_ens}}"
+
+# Check to make sure things look ok:
+#echo ${args_run}
+#echo ${args_ens}
+
+# Call job run with shell (sequential) output and force option activated,
+# as well as desired ensemble arguments, and call run_climber with -x
+# option activated to ensure use of runner for updating parameter files 
+# individual run options, and {} to signify use the rundir supplied by job run.
+#cmd="job run --shell -f ${args_ens} -- ${args_run} -x {}"
+cmd="python -m runner.job run --shell -f ${args_ens} -- ${args_run} -x {}"
+
+# Check to make sure command to be run looks ok:
+#echo
+#echo ${cmd} 
+#echo 
+
+# Run command:
+eval ${cmd}
