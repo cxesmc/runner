@@ -6,6 +6,6 @@ setup(name='runner',
       cmdclass=versioneer.get_cmdclass(),
       author_email='mahe.perrette@pik-potsdam.de',
       packages = ['runner', 'runner.lib', 'runner.ext', 'runner.tools', 'runner.job'],
-      depends = ['numpy', 'scipy', 'six', 'tox'],
+      depends = ['numpy', 'scipy', 'six', 'tox','tabulate'],
       scripts = ['scripts/job','scripts/jobrun'], 
       )

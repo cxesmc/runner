@@ -21,11 +21,11 @@ args_ens="${@:${n_ens}}"
 #echo ${args_ens}
 
 # Call job run with shell (sequential) output and force option activated,
-# as well as desired ensemble arguments, and call run_climber with -x
+# as well as desired ensemble arguments, and call runcx with -x
 # option activated to ensure use of runner for updating parameter files 
-# individual run options, and {} to signify use the rundir supplied by job run.
-#cmd="job run --shell -f ${args_ens} -- ${args_run} -x {}"
-cmd="python -m runner.job run --shell -f ${args_ens} -- ${args_run} -x {}"
+# individual run options, and `-o {}` to signify use the rundir supplied by job run.
+#cmd="job run --shell -f ${args_ens} -- ${args_run} -x -o {}"
+cmd="python -m runner.job run --shell -f ${args_ens} -- ${args_run} -x -o {}"
 
 # Check to make sure command to be run looks ok:
 #echo
