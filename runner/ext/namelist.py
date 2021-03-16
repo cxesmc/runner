@@ -34,15 +34,6 @@ class Namelist(FileType):
         params = parse_nml(string)
         return odict([(p.group + self.sep + p.name, p.value) for p in params])
 
-def nml_update_if_exists(par,new):
-    # Only update keys if they already exist 
-
-    for key in new:
-        if key in par:
-            par.update({key:new.get(key)})
-
-    return par
-
 def parse_nml(string, ignore_comments=False):
     """ parse a string namelist, and returns a list of param bundles
     with four attrs: name, value, help, group
@@ -205,3 +196,129 @@ def _format_value(value):
         return value and '.true.' or '.false.'
     else:
         return "{}".format(repr(value))
+
+## Methods added by Alex for extra functionality:
+## (not clear if this is the best place for them...)
+def nml_update_if_exists(par,new):
+    # Only update keys if they already exist 
+
+    for key in new:
+        if key in par:
+            par.update({key:new.get(key)})
+
+    return par
+
+def param_summary(par,rundir,verbose):
+    '''Write summary to screen about this run based on runner.json'''
+
+    # Print run directory
+    print("rundir : {}".format(rundir))
+
+    if verbose:
+        # Print parameters specified for this run
+
+        out_list_head = ["Parameter","Value"]
+        out_list = []
+        for key,val in par.items():
+            out_list.append([key,val])
+        
+        df = DataFrame(out_list,columns=out_list_head)
+        print(df.to_string(index=False))
+
+    return 
+
+def param_write_to_files(params,nml_src_paths,nml_dst_paths,grp_aliases=None):
+    '''Write parameters from a dict to one or more destination
+    parameter files, given the input parameter file(s), substituting
+    group names by their aliases when necessary. 
+    '''
+
+    # First expand input parameter group-name aliases if available
+    if not grp_aliases is None:
+        params_mapped = param_map_groups(params,grp_aliases)
+
+    # Next, check to make sure desired parameters exist
+    param_check_all(params_mapped,nml_src_paths)
+
+    # If everything was ok, loop over files and write new parameter values 
+    for par_src_path,par_dst_path in zip(nml_src_paths,nml_dst_paths):
+        param_write_to_file(params_mapped,par_src_path,par_dst_path)
+
+    return 
+
+def param_check_all(params,par_paths):
+    '''Check whether all parameters defined in a dict
+    exist in one or more input namelist parameter files. 
+    '''
+
+    # Get all possible parameters from input files
+    params_all = []
+    for path in par_paths:
+        # Load input namelist parameters
+        params_all.append(Namelist().load(open(path)))
+
+    # Extract set of keys from all files
+    all_keys = set(k for d in params_all for k in d)
+
+    # Determine which keys do not exist in parameter file params
+    missing_keys = set(params)-set(all_keys)
+
+    if len(missing_keys) > 0:
+        error_msg = ("\n\nError: one or more parameters not found in input parameter files.\n\n" +
+                     "Missing parameters: \n" +
+                     "  "+",".join(missing_keys) + "\n\n" +
+                     "Parameter files checked: \n" +
+                     "\n".join(par_paths) + "\n\n" )
+        raise Exception(error_msg)
+
+def param_write_to_file(params,par_src_path,par_dst_path):
+    '''Load parameters from a namelist parameter file,
+    update values according to the dictionary provided,
+    and then write the updated namelist parameter file. 
+    '''
+
+    # Load input namelist parameters
+    params_now = Namelist().load(open(par_src_path))
+
+    # Update parameters with desired values (only update 
+    # parameter values if the parameters are defined in this set)
+    params_now = nml_update_if_exists(params_now,params) 
+    #params_now.update(params)
+
+    # Write updated parameter file to rundir
+    f = open(par_dst_path, 'w')
+    Namelist().dump(params_now, f)
+
+    return 
+
+def param_map_groups(params,grp_aliases):
+    '''Convert shortcut group names used on command line into 
+       actual groups that exist in parameter file using the mapping
+       defined in the config file.
+    '''
+
+    params_out = dict() 
+
+    for key,val in params.items():
+        if '.' in key:
+            tmp = key.split('.')
+            grp = tmp[0]
+            par = tmp[1] 
+
+            if grp in [*grp_aliases]:
+                grp_new = grp_aliases[grp]
+            else:
+                grp_new = grp 
+
+            key_new = "{}.{}".format(grp_new,par)
+
+        else:
+            key_new = key 
+
+        params_out[key_new] = val 
+
+    # for key,val in params_out.items():
+    #     print(key,val)
+
+    return params_out
+
