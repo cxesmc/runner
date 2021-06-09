@@ -79,6 +79,8 @@ def parse_nml(string, ignore_comments=False):
             line = line.strip()
             if '=' in line:
                 joined_lines.append(line)
+            elif line == '':
+                pass
             else:
                 # continuation of previous line
                 joined_lines[-1] += line
@@ -234,9 +236,11 @@ def param_write_to_files(params,nml_src_paths,nml_dst_paths,grp_aliases=None):
     '''
 
     # First expand input parameter group-name aliases if available
-    if not grp_aliases is None:
+    if not grp_aliases is None and len(grp_aliases) > 0:
         params_mapped = param_map_groups(params,grp_aliases)
-
+    else:
+        params_mapped = params 
+        
     # Next, check to make sure desired parameters exist
     param_check_all(params_mapped,nml_src_paths)
 
