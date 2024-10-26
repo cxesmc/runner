@@ -16,17 +16,14 @@ These libraries can be installed with `pip`, e.g., `pip install tabulate`.
 Install
 =======
 
-1. Clone / download the `runner` repository from [https://github.com/alex-robinson/runner](https://github.com/alex-robinson/runner)
-2. Install `runner` to your Python installation via `pip`:
+1. Install `runner` to your Python installation via `pip`:
 
 ```
-cd runner 
-pip install ./ 
+pip install https://github.com/alex-robinson/runner/archive/refs/heads/master.zip
+pip install tabulate
 ```
 
 Now check that system command `job` is available by running `job -h`. 
-
-Note that install method `python setup.py install` should be avoided if possible to maintain Python system integrity.
 
 Usage
 =====
