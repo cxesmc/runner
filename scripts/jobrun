@@ -1,27 +1,5 @@
 #!/bin/bash
 
-# Store all command line arguments as an array
-myArray=( "$@" )
-
-# Determine number of argument equal to '--'
-for i in "${!myArray[@]}"; do
-    [[ "${myArray[$i]}" = '--' ]] && break
-done
-n_run=$i
-n_ens="$(($n_run + 2))"
-
-# Get string of arguments related to individual run options (run_climber options)
-args_run=$(printf "%s " "${myArray[@]:0:${n_run}}")
-
-# Get string of arguments related to ensemble (job run options)
-args_ens="${@:${n_ens}}"
-
-# Check to make sure things look ok:
-#echo ${args_run}
-#echo ${args_ens}
-
-##########################################
-
 # Initialize variables
 options_run=""
 options_p=""
@@ -76,9 +54,6 @@ echo "Run options: $options_run"
 echo "Ensemble options: $options_ens"
 echo ""
 echo ""
-
-##########################################
-
 
 # Call job run with shell (sequential) output and force option activated,
 # as well as desired ensemble arguments, and call runcx with -x
