@@ -20,6 +20,66 @@ args_ens="${@:${n_ens}}"
 #echo ${args_run}
 #echo ${args_ens}
 
+##########################################
+
+# Initialize variables
+options_run=""
+options_p=""
+options_ens=""
+
+# Parse arguments
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        --) # Skip separator
+            shift
+            ;;
+        -a)
+            # Handle -a if necessary
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        -o)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        -p)
+            shift
+            # Collect everything after `-p` until the next option or end of input
+            while [[ "$#" -gt 0 && ! "$1" =~ ^- ]]; do
+                options_p="$options_p $1"
+                shift
+            done
+            options_p="-p $options_p"
+            ;;
+        -*) # Handle any other ensemble options starting with "-"
+            options_run="$options_run $1 $2"
+            shift 2
+            ;;
+        *) # Collect any ensemble standalone arguments
+            options_run="$options_run $1"
+            shift
+            ;;
+    esac
+done
+
+# Trim any leading/trailing whitespace from options
+options_p=$(echo "$options_p" | xargs)
+options_run=$(echo "$options_run" | xargs)
+options_ens=$(echo "$options_ens" | xargs)
+
+# Finally join param options to all run options
+options_ens="$options_ens $options_p"
+
+# Output for verification (remove or modify as needed in your script)
+echo ""
+echo "Run options: $options_run"
+echo "Ensemble options: $options_ens"
+echo ""
+echo ""
+
+##########################################
+
+
 # Call job run with shell (sequential) output and force option activated,
 # as well as desired ensemble arguments, and call runcx with -x
 # option activated to ensure use of runner for updating parameter files 
