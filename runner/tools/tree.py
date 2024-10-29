@@ -28,6 +28,11 @@ def _short(name, value):
     if ".." in value: value = value.replace('..','')
     if ".nc" in value: value = value.replace('.nc','')
 
+    # Assume name will be of form "group_name.param_name". Remove
+    # the group_name from the string. 
+    if "." in name:
+        name = name.split(".")[1]
+
     # Remove all vowels and underscores from parameter name
     name = name
     for letter in ['a','e','i','o','u','A','E','I','O','U','_']:
