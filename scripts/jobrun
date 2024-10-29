@@ -8,11 +8,131 @@ options_ens=""
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
-        --) # Skip separator
+        --) 
+            # Skip separator
+            shift
+            ;;
+        -h)
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        -i)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --params-file)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        -j)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --id)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --include-default)
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        --file-type)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --file-type-out)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --line-sep)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --line-template)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --template-file)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --help-file-type)
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        --file-in)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --file-out)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --arg-out-prefix)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --arg-prefix)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --env-prefix)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --env-out)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        -m)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --default-file)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --default-params)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --work-dir)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --max-workers)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        -t)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --timeout)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --shell)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        --echo)
+            options_ens="$options_ens $1 $2"
+            shift 2
+            ;;
+        -f)
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        --force)
+            options_ens="$options_ens $1"
             shift
             ;;
         -a)
-            # Handle -a if necessary
+            options_ens="$options_ens $1"
+            shift
+            ;;
+        --auto-dir)
             options_ens="$options_ens $1"
             shift
             ;;
